@@ -1,5 +1,5 @@
 import logging
-import random
+import requests
 from flask import Flask, request, jsonify
 from typing import Optional
 
@@ -44,7 +44,8 @@ def handle_dialogue(res: dict, req: dict) -> None:
         
         if not word:
             res["response"]["text"] = "Вы не указали слово для перевода. Попробуйте так: 'Переведи слово стакан'"
-
+            return
+        
         translation = translate_word(word)
         
         if translation:
@@ -58,7 +59,7 @@ def handle_dialogue(res: dict, req: dict) -> None:
 def translate_word(word: str) -> Optional[str]:
     try:
         url = f"https://api.mymemory.translated.net/get?q={word}&langpair=ru|en"
-        response = request.get(url)
+        response = requests.get(url)
         data = response.json()
         
         if response.status_code == 200 and data.get("responseData"):
